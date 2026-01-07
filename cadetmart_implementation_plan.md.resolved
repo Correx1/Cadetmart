@@ -1,0 +1,494 @@
+# CadetMart Implementation Plan
+## Digital Products Marketplace with Purple Stella Theme
+
+---
+
+## 🎯 Project Overview
+
+**What We're Building:**
+A streamlined digital products marketplace (like Stella) with:
+- Clean purple-themed UI
+- Product browsing with categories
+- Product detail pages
+- Shopping cart
+- Flutterwave checkout
+- Order confirmation
+
+**What We're NOT Building:**
+- ❌ Homepage/landing page
+- ❌ Rental services
+- ❌ Additional services
+- ❌ About/Contact pages
+- ❌ Inventory management
+
+---
+
+## 📊 Architecture Analysis (from clautechs)
+
+### Core Features to Replicate
+
+#### 1. **Product Marketplace** (`/Marketplace` → `/`)
+**Current Implementation:**
+- Infinite scroll pagination
+- Category filtering (dropdown)
+- Search functionality
+- Product grid (responsive)
+- VAT calculation logic
+- Seeded shuffle for randomization
+- Strict data validation
+
+**Components Used:**
+- [Products.tsx](file:///c:/Users/hp/Desktop/clautechs%20-%20Copy/clautechs/app/components/Products.tsx) - Main marketplace
+- [AddToCart.tsx](file:///c:/Users/hp/Desktop/clautechs%20-%20Copy/clautechs/app/components/AddToCart.tsx) - Cart button
+- [Search.tsx](file:///c:/Users/hp/Desktop/clautechs%20-%20Copy/clautechs/app/components/Search.tsx) - Search bar
+- Product card rendering
+- Skeleton loaders
+
+#### 2. **Product Detail Page** (`/product/[slug]`)
+**Current Implementation:**
+- Image gallery (multiple images)
+- Product info (name, price, description)
+- Category badge
+- Discount calculation
+- Rating display
+- Add to cart
+- Related products (Suggestions)
+- VAT pricing
+
+**Components Used:**
+- [ImageGallery.tsx](file:///c:/Users/hp/Desktop/clautechs%20-%20Copy/clautechs/app/components/ImageGallery.tsx) - Image carousel
+- [Suggestions.tsx](file:///c:/Users/hp/Desktop/clautechs%20-%20Copy/clautechs/app/components/Suggestions.tsx) - Related products
+- [AddToCart.tsx](file:///c:/Users/hp/Desktop/clautechs%20-%20Copy/clautechs/app/components/AddToCart.tsx) - Purchase button
+
+#### 3. **Shopping Cart**
+**Current Implementation:**
+- `use-shopping-cart` library
+- Redux persist for cart state
+- Cart sidebar
+- Quantity management
+- Price calculations
+- Clear cart functionality
+
+**Components Used:**
+- [Cart.tsx](file:///c:/Users/hp/Desktop/clautechs%20-%20Copy/clautechs/app/components/Cart.tsx) - Cart sidebar
+- [Provider.tsx](file:///c:/Users/hp/Desktop/clautechs%20-%20Copy/clautechs/app/components/Provider.tsx) - Cart context wrapper
+
+#### 4. **Checkout Flow** (`/Checkout`)
+**Current Implementation:**
+- Customer details form
+- Order summary
+- Flutterwave payment initialization
+- Google Sheets logging
+- Email notifications
+
+**Key Logic:**
+- Form validation
+- Payment API (`/api/initialize-payment`)
+- Webhook handling (`/api/webhook`)
+
+#### 5. **Success Page** (`/success`)
+**Current Implementation:**
+- Order confirmation
+- Cart clearing
+- Inventory deduction
+- Order details display
+- Redirect to home
+
+---
+
+## 🎨 Design System (Purple Stella Theme)
+
+### Color Palette
+```css
+Primary Purple: #7C3AED (purple-600)
+Dark Purple: #6D28D9 (purple-700)
+Light Purple: #F3E8FF (purple-50)
+Accent Pink: #FDF2F8 (pink-50)
+Text: #111827 (gray-900)
+Muted: #6B7280 (gray-500)
+```
+
+### Typography
+```css
+Font Family: Inter, system-ui
+Headings: Bold (700-800)
+Body: Medium (500-600)
+Small Text: Regular (400)
+```
+
+### Components Style
+- Rounded corners: `rounded-xl` (12px)
+- Shadows: Soft, layered
+- Gradients: Purple-to-purple-dark
+- Hover effects: Scale + shadow
+- Transitions: 200-300ms
+
+---
+
+## 📁 File Structure
+
+```
+cadetmart/
+├── app/
+│   ├── components/
+│   │   ├── ProductCard.tsx ✅
+│   │   ├── ProductCardSkeleton.tsx ✅
+│   │   ├── CategoryFilter.tsx ✅
+│   │   ├── SearchBar.tsx ✅
+│   │   ├── ImageGallery.tsx
+│   │   ├── AddToCart.tsx
+│   │   ├── Cart.tsx
+│   │   ├── Navbar.tsx
+│   │   ├── Footer.tsx
+│   │   ├── Suggestions.tsx
+│   │   └── Provider.tsx
+│   ├── product/[slug]/
+│   │   └── page.tsx
+│   ├── checkout/
+│   │   └── page.tsx
+│   ├── success/
+│   │   └── page.tsx
+│   ├── api/
+│   │   ├── initialize-payment/route.ts
+│   │   └── webhook/route.ts
+│   ├── lib/
+│   │   └── sanity.ts
+│   ├── context/
+│   │   └── CartContext.tsx
+│   ├── page.tsx (Marketplace)
+│   └── layout.tsx
+├── cadetmart-sanity/
+│   ├── schemas/
+│   │   ├── product.ts
+│   │   └── category.ts
+│   └── sanity.config.ts
+└── .env
+```
+
+---
+
+## 🗄️ Sanity CMS Schema
+
+### Product Schema
+```typescript
+{
+  name: 'product',
+  type: 'document',
+  fields: [
+    { name: 'name', type: 'string', required },
+    { name: 'slug', type: 'slug', required },
+    { name: 'description', type: 'text', required },
+    { name: 'price', type: 'number', required },
+    { name: 'fakePrice', type: 'number' }, // For discounts
+    { name: 'images', type: 'array', of: [{ type: 'image' }], required },
+    { name: 'category', type: 'reference', to: [{ type: 'category' }] },
+    { name: 'isDigital', type: 'boolean', default: true },
+    { name: 'downloadLink', type: 'url' }, // For digital products
+  ]
+}
+```
+
+### Category Schema
+```typescript
+{
+  name: 'category',
+  type: 'document',
+  fields: [
+    { name: 'name', type: 'string', required },
+    { name: 'slug', type: 'slug', required },
+    { name: 'description', type: 'text' },
+  ]
+}
+```
+
+---
+
+## 🛒 Shopping Cart Implementation
+
+### Library: `use-shopping-cart`
+```typescript
+// Provider setup
+<CartProvider
+  mode="payment"
+  cartMode="client-only"
+  stripe={null} // Using Flutterwave instead
+  currency="NGN"
+>
+  {children}
+</CartProvider>
+```
+
+### Cart Functions
+- [addItem()](file:///c:/Users/hp/Desktop/clautechs%20-%20Copy/clautechs/app/context/RentalCartContext.tsx#78-81) - Add product
+- [removeItem()](file:///c:/Users/hp/Desktop/clautechs%20-%20Copy/clautechs/app/context/RentalCartContext.tsx#82-88) - Remove product
+- `incrementItem()` - Increase quantity
+- `decrementItem()` - Decrease quantity
+- [clearCart()](file:///c:/Users/hp/Desktop/clautechs%20-%20Copy/clautechs/app/context/RentalCartContext.tsx#100-110) - Empty cart
+- `cartDetails` - Get cart items
+- `totalPrice` - Get total
+
+---
+
+## 💳 Payment Flow (Flutterwave)
+
+### Step 1: Initialize Payment
+```typescript
+// /api/initialize-payment/route.ts
+POST request with:
+- Customer details
+- Cart items
+- Total amount
+- Callback URL
+
+Returns: Payment link
+```
+
+### Step 2: Redirect to Flutterwave
+User completes payment on Flutterwave hosted page
+
+### Step 3: Webhook Verification
+```typescript
+// /api/webhook/route.ts
+- Verify transaction
+- Log to Google Sheets
+- Send confirmation email
+- Return success
+```
+
+### Step 4: Success Page
+```typescript
+// /success/page.tsx
+- Display order details
+- Clear cart
+- Show download links (for digital products)
+```
+
+---
+
+## 🔧 Key Logic to Implement
+
+### 1. **VAT Calculation**
+```typescript
+const transactionFeeRate = 0.06;
+const vatRate = 0.075;
+
+function applyVAT(price: number) {
+  const fee = price * transactionFeeRate;
+  const vat = fee * vatRate;
+  return price + fee + vat;
+}
+```
+
+### 2. **Product Validation**
+```typescript
+function isValidProduct(product: any) {
+  return Boolean(
+    product._id &&
+    product.name &&
+    product.slug &&
+    product.price &&
+    product.images?.length > 0
+  );
+}
+```
+
+### 3. **Seeded Shuffle** (for consistent randomization)
+```typescript
+function seededShuffle(array: any[], seed: number) {
+  // Shuffle products consistently per session
+  // Prevents products jumping around on pagination
+}
+```
+
+### 4. **Infinite Scroll**
+```typescript
+// Using react-infinite-scroll-component
+<InfiniteScroll
+  dataLength={products.length}
+  next={fetchMore}
+  hasMore={hasMore}
+  loader={<Skeleton />}
+>
+  {products.map(product => <ProductCard />)}
+</InfiniteScroll>
+```
+
+---
+
+## 📝 Implementation Steps
+
+### Phase 1: Foundation (Steps 1-5)
+1. ✅ Install dependencies
+2. ✅ Create component structure
+3. ✅ Set up purple theme
+4. **Create Sanity schemas**
+5. **Set up Sanity client**
+
+### Phase 2: Marketplace (Steps 6-10)
+6. **Create main marketplace page**
+   - Integrate ProductCard
+   - Add infinite scroll
+   - Implement search
+   - Add category filter
+
+7. **Implement data fetching**
+   - Sanity queries
+   - VAT logic
+   - Validation
+   - Pagination
+
+8. **Add cart functionality**
+   - Install use-shopping-cart
+   - Create Provider
+   - Build Cart sidebar
+   - Add AddToCart button
+
+9. **Create Navbar**
+   - Logo
+   - Cart icon with count
+   - Purple theme
+
+10. **Create Footer**
+    - Simple, clean design
+    - Purple accents
+
+### Phase 3: Product Details (Steps 11-13)
+11. **Create product/[slug] page**
+    - Image gallery
+    - Product info
+    - Add to cart
+    - Pricing display
+
+12. **Build ImageGallery component**
+    - Main image
+    - Thumbnail navigation
+    - Zoom on hover
+
+13. **Create Suggestions component**
+    - Related products
+    - Same category
+    - Horizontal scroll
+
+### Phase 4: Checkout (Steps 14-17)
+14. **Create checkout page**
+    - Customer form
+    - Order summary
+    - Total calculation
+
+15. **Implement Flutterwave**
+    - Initialize payment API
+    - Redirect to payment
+    - Handle callback
+
+16. **Create webhook handler**
+    - Verify payment
+    - Log order
+    - Send email
+
+17. **Create success page**
+    - Order confirmation
+    - Clear cart
+    - Download links
+
+### Phase 5: Polish (Steps 18-20)
+18. **Add loading states**
+    - Skeletons
+    - Spinners
+    - Transitions
+
+19. **Error handling**
+    - 404 pages
+    - Payment failures
+    - Network errors
+
+20. **Testing & deployment**
+    - Test all flows
+    - Mobile responsive
+    - Deploy to Vercel
+
+---
+
+## 🔐 Environment Variables
+
+```bash
+# Sanity
+NEXT_PUBLIC_SANITY_PROJECT_ID=
+NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_API_TOKEN=
+
+# Flutterwave
+NEXT_PUBLIC_FLW_PUBLIC_KEY=
+FLW_SECRET_KEY=
+
+# Google Sheets (optional)
+GOOGLE_SHEETS_PRIVATE_KEY=
+GOOGLE_SHEETS_CLIENT_EMAIL=
+GOOGLE_SPREADSHEET_ID=
+
+# Email (optional)
+SMTP_HOST=
+SMTP_USER=
+SMTP_PASS=
+```
+
+---
+
+## 📦 Dependencies Needed
+
+### Already Installed
+- ✅ next
+- ✅ react
+- ✅ tailwindcss
+- ✅ typescript
+- ✅ lucide-react
+- ✅ @sanity/client
+- ✅ @sanity/image-url
+- ✅ next-sanity
+- ✅ use-shopping-cart
+
+### Still Need
+- `react-infinite-scroll-component`
+- `use-debounce`
+- `redux` & `redux-persist` (for cart persistence)
+- `react-redux`
+
+---
+
+## 🎯 Success Criteria
+
+**Marketplace:**
+- [ ] Products load with infinite scroll
+- [ ] Search works
+- [ ] Category filter works
+- [ ] Cards show price, image, name
+- [ ] Purple theme applied
+
+**Product Page:**
+- [ ] Images display in gallery
+- [ ] Price shows with VAT
+- [ ] Add to cart works
+- [ ] Related products show
+
+**Cart:**
+- [ ] Items add/remove
+- [ ] Quantities update
+- [ ] Total calculates correctly
+- [ ] Persists on refresh
+
+**Checkout:**
+- [ ] Form validates
+- [ ] Flutterwave payment works
+- [ ] Order confirmation shows
+- [ ] Cart clears after purchase
+
+---
+
+## 🚀 Next Immediate Steps
+
+1. Create Sanity Studio folder
+2. Define product & category schemas
+3. Add sample products to Sanity
+4. Build main marketplace page
+5. Integrate components we created
+
+**Ready to proceed?**
