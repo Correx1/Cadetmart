@@ -10,6 +10,7 @@ interface Product {
   price: number;
   quantity: number;
   sales: number;
+  stockAdditions?: { quantityAdded: number; dateAdded: string }[];
 }
 
 export default function SalesPage() {
@@ -42,8 +43,16 @@ export default function SalesPage() {
     return product.price * product.sales;
   };
 
+  const calculateTotal = (product: Product) => {
+    const additionsTotal = product.stockAdditions?.reduce(
+      (sum, addition) => sum + addition.quantityAdded,
+      0
+    ) || 0;
+    return product.quantity + additionsTotal;
+  };
+
   const calculateRemaining = (product: Product) => {
-    return product.quantity - product.sales;
+    return calculateTotal(product) - product.sales;
   };
 
   const grandTotalUnits = filteredProducts.reduce((sum, p) => sum + p.sales, 0);

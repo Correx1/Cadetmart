@@ -182,13 +182,13 @@ function CheckoutContent() {
           <div className="md:col-span-2">
             <Card className="border-gray-100 dark:border-gray-800">
               <CardHeader className="pb-4">
-                <CardTitle className="text-lg font-semibold">Contact Information</CardTitle>
+                <CardTitle className="text-base font-semibold">Contact Information</CardTitle>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   {/* Name Field */}
                   <div className="space-y-1.5">
-                    <Label htmlFor="name" className="text-sm font-medium flex items-center gap-1.5 text-gray-700 dark:text-gray-300">
+                    <Label htmlFor="name" className="text-sm font-normal flex items-center gap-1.5 text-gray-700 dark:text-gray-300">
                       <User className="w-3.5 h-3.5" />
                       Full Name
                     </Label>
@@ -200,6 +200,7 @@ function CheckoutContent() {
                       onChange={handleChange}
                       autoComplete="off"
                       placeholder="John Doe"
+                      style={{ fontSize: '0.875rem', fontWeight: '400' }}
                       className={`text-sm border-gray-200 dark:border-gray-700 focus-visible:ring-purple-500 ${errors.name ? 'border-red-300' : ''}`}
                     />
                     {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
@@ -207,7 +208,7 @@ function CheckoutContent() {
 
                   {/* Email Field */}
                   <div className="space-y-1.5">
-                    <Label htmlFor="email" className="text-sm font-medium flex items-center gap-1.5 text-gray-700 dark:text-gray-300">
+                    <Label htmlFor="email" className="text-sm font-normal flex items-center gap-1.5 text-gray-700 dark:text-gray-300">
                       <Mail className="w-3.5 h-3.5" />
                       Email Address
                     </Label>
@@ -219,6 +220,7 @@ function CheckoutContent() {
                       onChange={handleChange}
                       autoComplete="off"
                       placeholder="john@example.com"
+                      style={{ fontSize: '0.875rem', fontWeight: '400' }}
                       className={`text-sm border-gray-200 dark:border-gray-700 focus-visible:ring-purple-500 ${errors.email ? 'border-red-300' : ''}`}
                     />
                     {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
@@ -226,7 +228,7 @@ function CheckoutContent() {
 
                   {/* Phone Field */}
                   <div className="space-y-1.5">
-                    <Label htmlFor="phone" className="text-sm font-medium flex items-center gap-1.5 text-gray-700 dark:text-gray-300">
+                    <Label htmlFor="phone" className="text-sm font-normal flex items-center gap-1.5 text-gray-700 dark:text-gray-300">
                       <Phone className="w-3.5 h-3.5" />
                       Phone Number
                     </Label>
@@ -238,6 +240,7 @@ function CheckoutContent() {
                       onChange={handleChange}
                       autoComplete="off"
                       placeholder="08012345678"
+                      style={{ fontSize: '0.875rem', fontWeight: '400' }}
                       className={`text-sm border-gray-200 dark:border-gray-700 focus-visible:ring-purple-500 ${errors.phone ? 'border-red-300' : ''}`}
                     />
                     {errors.phone && <p className="text-xs text-red-500 mt-1">{errors.phone}</p>}
@@ -245,7 +248,7 @@ function CheckoutContent() {
 
                   {/* Location Field */}
                   <div className="space-y-1.5">
-                    <Label htmlFor="location" className="text-sm font-medium flex items-center gap-1.5 text-gray-700 dark:text-gray-300">
+                    <Label htmlFor="location" className="text-sm font-normal flex items-center gap-1.5 text-gray-700 dark:text-gray-300">
                       <MapPin className="w-3.5 h-3.5" />
                       Delivery Location
                     </Label>
@@ -257,6 +260,7 @@ function CheckoutContent() {
                       onChange={handleChange}
                       autoComplete="off"
                       placeholder="Enter your delivery address"
+                      style={{ fontSize: '0.875rem', fontWeight: '400' }}
                       className={`text-sm border-gray-200 dark:border-gray-700 focus-visible:ring-purple-500 ${errors.location ? 'border-red-300' : ''}`}
                     />
                     {errors.location && <p className="text-xs text-red-500 mt-1">{errors.location}</p>}
@@ -264,7 +268,7 @@ function CheckoutContent() {
 
                   {/* Size Fields (Optional) */}
                   <div className="space-y-1.5">
-                    <Label className="text-sm font-medium flex items-center gap-1.5 text-gray-700 dark:text-gray-300">
+                    <Label className="text-sm font-normal flex items-center gap-1.5 text-gray-700 dark:text-gray-300">
                       <Ruler className="w-3.5 h-3.5" />
                       Size <span className="text-xs font-normal text-gray-400">(Optional)</span>
                     </Label>
@@ -272,12 +276,12 @@ function CheckoutContent() {
                       {/* Shoe Size */}
                       <div>
                         <Select value={formData.shoeSize} onValueChange={(value) => setFormData(prev => ({ ...prev, shoeSize: value }))}>
-                          <SelectTrigger className="text-sm border-gray-200 dark:border-gray-700 focus:ring-purple-500">
-                            <SelectValue placeholder="Shoe size" />
+                          <SelectTrigger className="text-sm border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:ring-purple-500">
+                            <SelectValue placeholder="Shoe size" className="text-sm font-normal" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
                             {shoeSizes.map(size => (
-                              <SelectItem key={size} value={size} className="text-sm">
+                              <SelectItem key={size} value={size} className="text-sm focus:bg-gray-100 dark:focus:bg-gray-800">
                                 {size}
                               </SelectItem>
                             ))}
@@ -288,12 +292,12 @@ function CheckoutContent() {
                       {/* Clothing Size */}
                       <div>
                         <Select value={formData.clothingSize} onValueChange={(value) => setFormData(prev => ({ ...prev, clothingSize: value }))}>
-                          <SelectTrigger className="text-sm border-gray-200 dark:border-gray-700 focus:ring-purple-500">
-                            <SelectValue placeholder="Clothing size" />
+                          <SelectTrigger className="text-sm border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:ring-purple-500">
+                            <SelectValue placeholder="Clothing size" className="text-sm font-normal" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
                             {clothingSizes.map(size => (
-                              <SelectItem key={size} value={size} className="text-sm">
+                              <SelectItem key={size} value={size} className="text-sm focus:bg-gray-100 dark:focus:bg-gray-800">
                                 {size}
                               </SelectItem>
                             ))}
