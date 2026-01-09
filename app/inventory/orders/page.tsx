@@ -9,6 +9,8 @@ interface Order {
   email: string;
   phone: string;
   location: string;
+  shoe_size: string;
+  clothing_size: string;
   items: string;
   total_price: number;
   transaction_id: string;
@@ -272,6 +274,14 @@ export default function OrdersPage() {
                       {order.payment_status}
                     </span>
                   </div>
+                  {(order.shoe_size || order.clothing_size) && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-500 dark:text-gray-400">Size:</span>
+                      <span className="text-gray-900 dark:text-white text-xs">
+                        {[order.shoe_size && `Shoe: ${order.shoe_size}`, order.clothing_size && `Clothing: ${order.clothing_size}`].filter(Boolean).join(', ')}
+                      </span>
+                    </div>
+                  )}
                   {itemCount > 0 && (
                     <div className="pt-2 border-t border-gray-200 dark:border-gray-800">
                       <p className="text-gray-500 dark:text-gray-400 text-xs mb-1">Items:</p>
@@ -297,6 +307,8 @@ export default function OrdersPage() {
                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider w-24">Email</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Phone</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Location</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Shoe Size</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Clothing Size</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider w-64">Items</th>
                 <th className="px-4 py-3 text-right text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Amount</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider w-32">Date</th>
@@ -307,7 +319,7 @@ export default function OrdersPage() {
             <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
               {filteredOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className="px-6 py-12 text-center">
+                  <td colSpan={12} className="px-6 py-12 text-center">
                     <FileText className="w-8 h-8 text-gray-300 dark:text-gray-700 mx-auto mb-2" />
                     <p className="text-sm text-gray-500 dark:text-gray-400">
                       {searchQuery ? 'No orders found' : 'No orders yet'}
@@ -335,6 +347,12 @@ export default function OrdersPage() {
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
                         {order.location || 'N/A'}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
+                        {order.shoe_size || '-'}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
+                        {order.clothing_size || '-'}
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
                         <OrderItemsAccordion items={itemsArray} />

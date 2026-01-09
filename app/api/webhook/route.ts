@@ -43,19 +43,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: 'Payment not completed' }, { status: 200 });
     }
 
-    // 🔍 DEBUG: Log all email-related data from Flutterwave
-    console.log('🔍 WEBHOOK DEBUG - Email Tracing:');
-    console.log('📧 customer.email:', customer.email);
-    console.log('📧 customer.name:', customer.name);
-    console.log('📧 customer.phone_number:', customer.phone_number);
-    console.log('📧 meta?.email:', meta?.email);
-    console.log('📧 meta?.name:', meta?.name);
-    console.log('📧 meta?.phone:', meta?.phone);
-    console.log('📦 Full customer object:', JSON.stringify(customer, null, 2));
-    console.log('📦 Full meta object:', JSON.stringify(meta, null, 2));
-
-    // Get customer email directly (no test mode cleaning needed in production)
-    const customerEmail = customer.email;
+    // Get customer email from meta (Flutterwave modifies customer.email in test mode)
+    // In test mode, customer.email becomes: ravesb_xxxxx_whisentant@gmail.com
+    // The actual customer email is preserved in meta.email
+    const customerEmail = meta?.email || customer.email;
     
     // Get customer name from meta if customer.name is "Cadetmart"
     const customerName = (customer.name === 'Cadetmart' || !customer.name) 
@@ -69,6 +60,8 @@ export async function POST(request: NextRequest) {
       email: customerEmail,
       phone: customer.phone_number || meta?.phone || '',
       location: meta?.location || '',
+      shoe_size: meta?.shoeSize || '', // Separate shoe size
+      clothing_size: meta?.clothingSize || '', // Separate clothing size
       items: meta?.items || '',
       total_price: data.amount,
       transaction_id: data.id,
@@ -85,6 +78,8 @@ export async function POST(request: NextRequest) {
       email: customerEmail,
       phone: customer.phone_number || meta?.phone || '',
       location: meta?.location || '',
+      shoeSize: meta?.shoeSize || '', // Separate shoe size
+      clothingSize: meta?.clothingSize || '', // Separate clothing size
       items: meta?.items || '',
       totalPrice: data.amount,
       transactionId: data.id,
