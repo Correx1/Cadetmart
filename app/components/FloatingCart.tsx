@@ -10,8 +10,8 @@ export default function FloatingCart() {
   const { cartCount = 0 } = useShoppingCart();
   const pathname = usePathname();
 
-  // Hide on inventory pages
-  if (pathname?.startsWith('/inventory')) {
+  // Only show on marketplace page (home page)
+  if (pathname !== '/') {
     return null;
   }
 

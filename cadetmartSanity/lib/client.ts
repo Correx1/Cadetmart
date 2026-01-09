@@ -1,9 +1,9 @@
 import { createClient } from 'next-sanity';
 
 export const client = createClient({
-  projectId: 'votyhd1p',
+  projectId: '31w0h863',
   dataset: 'production',
-  apiVersion: '2024-01-01', // Use current date or your preferred API version
+  apiVersion: '2026-01-09', // Use current date or your preferred API version
   useCdn: false, // Set to false for server-side requests to get fresh data
   token: process.env.SANITY_API_TOKEN, // Optional: for write operations
 });

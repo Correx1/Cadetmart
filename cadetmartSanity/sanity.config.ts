@@ -7,8 +7,10 @@ export default defineConfig({
   name: 'default',
   title: 'CadetMart',
 
-  projectId: 'votyhd1p',
+  projectId: '31w0h863',
   dataset: 'production',
+
+  basePath: '/sanitycms',
 
   plugins: [structureTool(), visionTool()],
 
