@@ -172,6 +172,7 @@ function CheckoutContent() {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
+                    autoComplete="off"
                     className={`w-full px-4 py-3 rounded-lg border ${
                       errors.name 
                         ? 'border-red-500 focus:ring-red-500' 
@@ -193,6 +194,7 @@ function CheckoutContent() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
+                    autoComplete="off"
                     className={`w-full px-4 py-3 rounded-lg border ${
                       errors.email 
                         ? 'border-red-500 focus:ring-red-500' 
@@ -214,6 +216,7 @@ function CheckoutContent() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
+                    autoComplete="off"
                     className={`w-full px-4 py-3 rounded-lg border ${
                       errors.phone 
                         ? 'border-red-500 focus:ring-red-500' 
@@ -235,6 +238,7 @@ function CheckoutContent() {
                     name="location"
                     value={formData.location}
                     onChange={handleChange}
+                    autoComplete="off"
                     className={`w-full px-4 py-3 rounded-lg border ${
                       errors.location 
                         ? 'border-red-500 focus:ring-red-500' 

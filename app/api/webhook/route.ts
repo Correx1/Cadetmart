@@ -43,15 +43,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: 'Payment not completed' }, { status: 200 });
     }
 
-    // Clean up email address (remove Flutterwave test prefix)
-    let cleanEmail = customer.email;
-    if (cleanEmail.includes('_')) {
-      // Extract actual email from format: ravesb_xxxxx_actual@email.com
-      const parts = cleanEmail.split('_');
-      if (parts.length >= 3) {
-        cleanEmail = parts.slice(2).join('_'); // Get everything after second underscore
-      }
-    }
+    // 🔍 DEBUG: Log all email-related data from Flutterwave
+    console.log('🔍 WEBHOOK DEBUG - Email Tracing:');
+    console.log('📧 customer.email:', customer.email);
+    console.log('📧 customer.name:', customer.name);
+    console.log('📧 customer.phone_number:', customer.phone_number);
+    console.log('📧 meta?.email:', meta?.email);
+    console.log('📧 meta?.name:', meta?.name);
+    console.log('📧 meta?.phone:', meta?.phone);
+    console.log('📦 Full customer object:', JSON.stringify(customer, null, 2));
+    console.log('📦 Full meta object:', JSON.stringify(meta, null, 2));
+
+    // Get customer email directly (no test mode cleaning needed in production)
+    const customerEmail = customer.email;
+    
     // Get customer name from meta if customer.name is "Cadetmart"
     const customerName = (customer.name === 'Cadetmart' || !customer.name) 
       ? (meta?.name || customer.name)
@@ -61,7 +66,7 @@ export async function POST(request: NextRequest) {
     const orderData = {
       order_number: txRef,
       person_name: customerName, // Use corrected customer name
-      email: cleanEmail,
+      email: customerEmail,
       phone: customer.phone_number || meta?.phone || '',
       location: meta?.location || '',
       items: meta?.items || '',
@@ -77,7 +82,7 @@ export async function POST(request: NextRequest) {
     const emailData = {
       orderNumber: txRef,
       personName: customerName, // Use corrected customer name
-      email: cleanEmail,
+      email: customerEmail,
       phone: customer.phone_number || meta?.phone || '',
       location: meta?.location || '',
       items: meta?.items || '',
