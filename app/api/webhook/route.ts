@@ -134,17 +134,21 @@ export async function POST(request: NextRequest) {
     let inventoryUpdated = false;
     try {
       if (meta?.items) {
-        const inventoryResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/inventory/update-sales`, {
+        // Parse items if it's a JSON string
+        const itemsArray = typeof meta.items === 'string' ? JSON.parse(meta.items) : meta.items;
+        
+        const inventoryResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/inventory/update-sales`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ items: meta.items }),
+          body: JSON.stringify({ items: itemsArray }),
         });
 
         if (inventoryResponse.ok) {
           const inventoryResult = await inventoryResponse.json();
           inventoryUpdated = true;
+          console.log('✅ Inventory updated:', inventoryResult);
         } else {
           console.error('❌ Inventory update failed:', await inventoryResponse.text());
         }
